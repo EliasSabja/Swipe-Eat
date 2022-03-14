@@ -1,0 +1,21 @@
+<% if current_admin %>
+    <div class="row text-center tall-tittle">
+        <h4><%= notice %></h4>
+    </div>
+
+    <p>
+        <strong>Nombre</strong>
+        <%= @admin.nombre %>
+    </p>
+
+    <p>
+        <strong>Email</strong>
+        <%= @admin.email %>
+    </p>
+    <br>
+    <%= link_to 'Editar Admin', admin_edit_admin_path(@admin.id) %><br><br>
+    <%= link_to "Borrar Admin", admin_path(@admin.id), method: :delete, data: {confirm: '¿Estás seguro que quieres borrar este Swiper?'}%><br><br>
+    <%= link_to "Volver a lista de Admins", lista_admins_path %>
+<% else %>
+    <% controller.redirect_to new_admin_session_path %>
+<% end %>

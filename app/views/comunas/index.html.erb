@@ -1,0 +1,94 @@
+<% if current_admin %>
+  <div class="row text-center tall-tittle">
+    <h4><%= notice %></h4>
+  </div>
+
+  <h1>Comunas</h1>
+
+  <h3 style="margin: 0px; margin-bottom: -17px;"> Ordenar por: </h3>
+  <table>
+      <tbody>
+          <tr>
+              <td>
+                  <%= form_tag(controller: 'comunas', action: "filtro", method: "post") do %>
+                      <div class="field">
+                          <%= hidden_field_tag(:filtro, "o_nombre") %><br>
+                      </div>
+                      <div class="actions">
+                          <%= submit_tag("Nombre") %><br><br>
+                      </div>
+                  <% end %>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cuarentena</th>
+        <th>Número de Restaurantes</th>
+        <th>Número de Swipers</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @comunas.each do |comuna| %>
+        <tr>
+          <td><%= comuna.nombre %></td>
+          <td><%= comuna.cuarentena %></td>
+          <td><%= comuna.restaurantes.length %></td>
+          <td><%= comuna.swipers.length %></td>
+          <td><%= link_to 'Ver detalles', comuna_path(comuna.id) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <br>
+
+  <table>
+    <thead>
+        <tr>
+            <th>Filtrar por nombre</th>
+            <th>Filtrar por cuarentena</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <%= form_tag(controller: 'comunas', action: "filtro", method: "post") do %>
+                    <div class="field">
+                        <%= text_field_tag(:input) %>
+                    </div>
+                    <div class="field">
+                        <%= hidden_field_tag(:filtro, "nombre") %><br>
+                    </div>
+                    <div class="actions">
+                        <%= submit_tag("Filtrar") %><br><br>
+                    </div>
+                <% end %>
+            </td>
+            <td>
+                <%= form_tag(controller: 'comunas', action: "filtro", method: "post") do %>
+                    <div class="field">
+                        <%= select_tag(:input, options_for_select(["true", "false"]))%>
+                    </div>
+                    <div class="field">
+                        <%= hidden_field_tag(:filtro, "cuarentena") %><br>
+                    </div>
+                    <div class="actions">
+                        <%= submit_tag("Filtrar") %><br><br>
+                    </div>
+                <% end %>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <%= link_to 'Crear Comuna', comunas_new_path %><br><br>
+  <%= link_to 'Volver a la lista de acciones disponibles.', admin_root_path %><br>
+<% else %>
+  <% controller.redirect_to new_admin_session_path %>
+<% end %>

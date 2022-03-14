@@ -1,0 +1,28 @@
+<% if current_admin or current_owner%>
+  <div class="row text-center tall-tittle">
+    <h4><%= notice %></h4>
+  </div>
+  
+
+  <p>
+    <strong>Owner:</strong>
+    <%= @owner.nombre %>
+  </p>
+  <p>
+    <strong>Correo:</strong>
+    <%= @owner.email%>
+  </p>
+  <% if current_admin %>
+    <%= link_to 'Editar Owner', admin_edit_owner_path(@owner.id) %>
+    <%= link_to "Borrar Owner", owner_path(@owner.id), method: :delete, data: {confirm: '¿Estás seguro que quieres borrar este Owner?'}%>
+    <%= link_to "Volver a lista de Owners", lista_owners_path %>
+  <% end %>
+
+  <% if current_owner %>
+    <%= link_to "Cerrar sesión", destroy_owner_session_path, method: :delete, data: {confirm: '¿Estás seguro que quieres cerrar sesión?'}  %>
+    <%= link_to 'Editar Owner logueado', edit_owner_registration_path %>
+    <%= link_to "Borrar Owner logueado", registration_path(resource_name), data: { confirm: "¿Estás seguro de querer borrar tu cuenta?" }, method: :delete %>
+  <% end %>
+<% else %>
+  <% controller.redirect_to new_owner_session_path %>
+<% end %>

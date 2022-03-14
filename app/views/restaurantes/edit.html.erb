@@ -1,0 +1,92 @@
+<% if current_admin or current_owner %>
+    <p id="notice">
+        <% if notice %>
+            <h2>ERROR:</h2>
+            <%= notice %><br>
+            <% if notice["nombre"] %>
+                <%= notice["nombre"][0] %><br>
+            <% end %>
+            <% if notice["descripcion"] %>
+                <%= notice["descripcion"][0] %><br>
+            <% end %>
+            <% if notice["telefono"] %>
+                <%= notice["telefono"][0] %><br>
+            <% end %>
+            <% if notice["direccion"] %>
+                <%= notice["direccion"][0] %><br>
+            <% end %>
+        <% end %>
+    </p>
+
+    <h1>Editar Restaurante</h1>
+
+    <%= form_with(model: @restaurante, local: true, method: :patch) do |form| %>
+        <div class="field">
+            <%= form.label :nombre %>
+            <%= form.text_field :nombre %>
+        </div>
+        <div class="field">
+            <%= form.label :teléfono %>
+            <%= form.text_field :telefono %>
+        </div>
+        <div class="field">
+            <%= form.label :dirección %>
+            <%= form.text_field :direccion %>
+        </div>
+        <div class="field">
+            <%= form.label :descripción %>
+            <%= form.text_field :descripcion %>
+        </div>
+        <div class="field">
+            <%= form.label :comuna %>
+            <%= form.select :comuna_id, options_from_collection_for_select(Comuna.all, :id, :nombre, @restaurante.comuna.id) %><br />
+        </div>
+        <% if current_admin %>
+            <div class="field">
+                <%= form.label :estado %>
+                <%= form.select :aceptado, options_for_select(["Pendiente", "Aceptado", "Rechazado"], @restaurante.aceptado) %>
+            </div>
+        <% else %>
+            <div class="field">
+                <%= form.label :agregar_imágenes %><br>
+                <%= form.file_field :imagenes, multiple: true %>
+            </div><br>
+        <% end %>
+        <div class="actions">
+            <%= form.submit "Enviar datos" %>
+        </div>
+    <% end %>
+
+    <br>
+    <div class="row">
+        <div class="col-md-6 text-center">
+          <h4><b>Eliminar Imágenes</b></h4>
+          <em>(Click para borrar)</em>
+        </div>
+    </div>
+      <br>
+    <div class="row">
+        <div class="col-md-6 text-center" style="height:250px;overflow-y:auto;">
+        <% numero = 1 %>
+        <% @restaurante.imagenes.each do |imagen| %>
+            <div style="margin-top:25px">
+                <b>
+                Imagen <%= numero %>
+                </b> <br>
+                <% numero += 1 %> 
+                <%= link_to image_tag(imagen, style:'width:180px; heigth:170px'), delete_imagen_restaurante_path(imagen.id, @restaurante.id), method: :delete, data: {confirm: "¿Estás seguro de querer eliminar esta imagen?"}, :class => "eliminar_foto" %>
+            </div>
+        <% end %>
+        </div>
+    </div><br><br>
+
+    <% if current_admin %>
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <%= link_to 'Lista Restaurantes', lista_restaurantes_path %>
+            </div>
+        </div><br><br>
+    <% end %>
+<% else %>
+    <% controller.redirect_to new_owner_session_path %>
+<% end %>

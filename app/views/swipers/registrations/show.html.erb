@@ -1,0 +1,103 @@
+<% if current_admin or current_swiper %>
+  <div class="row text-center tall-tittle">
+    <h4><%= notice %></h4>
+  </div>
+  
+  <div class="row" >
+    <div class="col-md-7">
+      <div class="row text-left tall-tittle">
+        <h1>Perfil</h1>
+      </div>
+      <div class="row">
+        <table class="table">
+          <tbody>
+            <tr>
+              <th>Nombre</th><th><%= @swiper.nombre %></th>
+            </tr>
+            <tr>
+              <th>Edad</th><th><%= @swiper.edad%></th>
+            </tr>
+            <tr>
+              <th>Cumpleaños</th><th><%= @swiper.cumpleanos.strftime("%d/%m")%></th>
+            </tr>
+            <% if current_admin %>
+              <tr>
+                <th>Teléfono</th><th><%= @swiper.telefono%></th>
+              </tr>
+              <tr>
+                <th>Dirección</th><th><%= @swiper.direccion%></th>
+              </tr>
+            <% elsif current_swiper %>
+              <% if current_swiper.id == @swiper.id %>
+                <tr>
+                  <th>Email</th><th><%= @swiper.email%></th>
+                </tr>
+                <tr>
+                  <th>Teléfono</th><th><%= @swiper.telefono%></th>
+                </tr>
+                <tr>
+                  <th>Dirección</th><th><%= @swiper.direccion%></th>
+                </tr>
+              <% end %>
+            <% end %>
+            <tr>
+              <th>Comuna</th><th><%= @swiper.comuna.nombre %></th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <div class="row">
+          <div class="col-md-6">
+            <strong>Gustos</strong><br>
+            <div style="height:120px;overflow:auto;">
+              <div class="align-z">
+                <div>
+                  <% @swiper.gustos.each do |gusto| %>
+                    <p> <%= gusto.nombre %> | <%= gusto.descripcion%> </p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+              <strong>Descripción</strong><br>
+              <p><%= @swiper.descripcion%></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div style="height:400px;overflow-y:auto;">
+        <div class="align-z" style="width: 20vw">
+          <% @swiper.imagenes.each do |imagen| %>
+            <div style="padding: 10px 10px 0 10px">
+              <%= image_tag(imagen, style:'width:400px; heigth: 400px') %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div style="margin-top: 25px;">
+        <ul class="nav nav-pills">
+          <% if current_admin %>
+            <li><%= link_to 'Editar Swiper', admin_edit_swiper_path(@swiper.id) %><br><br></li>
+            <li><%= link_to "Borrar Swiper", swiper_path(@swiper.id), method: :delete, data: {confirm: '¿Estás seguro que quieres borrar este Swiper?'}%><br><br></li>
+            <li><%= link_to "Volver a la lista de Swipers", lista_swipers_path %></li>
+          <% end %>
+
+          <% if (current_swiper) && (current_swiper.id == @swiper.id) %>
+            <li><%= link_to "Cerrar sesión", destroy_swiper_session_path, method: :delete, data: {confirm: '¿Estás seguro que quieres cerrar sesión?'}  %><br><br></li>
+            <li><%= link_to 'Editar datos del perfil', edit_swiper_registration_path %><br><br></li>
+            <li><%= link_to "Borrar cuenta", registration_path(resource_name), data: { confirm: "¿Estás seguro de querer borrar tu cuenta?" }, method: :delete %><br><br></li>
+          <% end %>
+        </ul>
+
+      </div>
+
+    </div>
+  </div>
+
+<% else %>
+    <% controller.redirect_to new_swiper_session_path %>
+<% end %>

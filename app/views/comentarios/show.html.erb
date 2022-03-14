@@ -1,0 +1,27 @@
+<% if current_admin %>
+    <div class="row text-center tall-tittle">
+        <h4><%= notice %></h4>
+    </div>
+
+    <p>
+        <strong>Contenido</strong>
+        <%= @comentario.contenido %>
+    </p>
+
+    <p>
+        <strong>Fecha</strong>
+        <%= @comentario.fecha %>
+    </p>
+
+    <p>
+        <strong>Valoración</strong>
+        <%= @comentario.valoracion %>
+    </p>
+
+    <br>
+
+    <%= link_to "Lista comentarios", lista_comentarios_path %>
+    <%= link_to "Eliminar comentario", comentario_path(@comentario.id), method: :delete, data: {confirm: 'Estás seguro de querer eliminar el comentario?'} %>
+<% else %>
+    <% controller.redirect_to new_admin_session_path %>
+<% end %>

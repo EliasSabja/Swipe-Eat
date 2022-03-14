@@ -1,0 +1,64 @@
+<% if current_admin %>
+    <p id="notice"><%= notice %></p>
+    <h1>Lista de Comentarios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Contenido</th>
+                <th>Fecha</th>
+                <th>Valoración</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% @filtrados.each do |comentario| %>
+                <tr>
+                    <td><%= comentario.contenido %></td>
+                    <td><%= comentario.fecha %></td>
+                    <td><%= comentario.valoracion %></td>
+                    <td><%= link_to 'Ver detalles', comentario_path(comentario.id) %></td>
+                </tr>
+            <%end%>
+        </tbody>
+    </table>
+    <br><br>
+    <table>
+        <thead>
+            <tr>
+                <th>Filtrar por texto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <h5 style="margin: 0px; text-align: center;">(solo los comentarios con el texto dentro de su contenido)</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h5 style="margin: 0px; text-align: center;">(Filtrar blanco para mostrar toda la lista.)</h5>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <%= form_tag(controller: 'comentarios', action: "filtro", method: "post") do %>
+                        <div class="field" style="text-align: center;">
+                            <%= text_field_tag(:input) %>
+                        </div>
+                        <div class="field">
+                            <%= hidden_field_tag(:filtro, "contenido") %><br>
+                        </div>
+                        <div class="actions" style="text-align: center;">
+                            <%= submit_tag("Filtrar") %><br><br>
+                        </div>
+                    <% end %>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    
+    <%= link_to 'Volver a la lista de acciones disponibles.', admin_root_path %><br>
+<% else %>
+    <% controller.redirect_to new_admin_session_path %>
+<% end %>

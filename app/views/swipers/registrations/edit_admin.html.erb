@@ -1,0 +1,162 @@
+<% if current_admin %>
+  <p id="notice">
+    <% if notice %>
+        <h2>ERROR:</h2>
+        <% if notice["nombre"] == ["vacio"] %>
+          <%= "Ingresó un Nombre en blanco." %><br>
+        <% elsif notice["nombre"] == ["existe"] %>
+          <%= "Ya existe un Admin con ese Nombre." %><br>
+        <% end %>
+        <% if notice["email"] == ["can't be blank"] %>
+          <%= "Ingresó un Correo en blanco." %><br>
+        <% elsif notice["email"] == ["has already been taken"] %>
+          <%= "Ingresó un Correo en blanco." %><br>
+        <% end %>
+        <% if notice["descripcion"] == ["vacio"] %>
+          <%= "Ingresó una Descripción en blanco." %><br>
+        <% elsif notice["descripcion"] == ["largo"] %>
+          <%= "La Descripción debe tener un largo entre 10 a 100 carácteres inclusive." %><br>
+        <% end %>
+        <% if notice["edad"] == ["vacio"] %>
+          <%= "Ingresó una Edad en blanco." %><br>
+        <% elsif notice["edad"] == ["formato"] %>
+          <%= "La Edad debe ser un entero mayor o igual a 18." %><br>
+        <% end %>
+        <% if notice["telefono"] == ["vacio"] %>
+          <%= "Ingresó un Teléfono en blanco." %><br>
+        <% elsif notice["telefono"] == ["formato"] %>
+          <%= "El Teléfono debe ingresarse en formato: +56912345678" %><br>
+        <% end %>
+        <% if notice["direccion"] == ["vacio"] %>
+          <%= "Ingresó una Dirección en blanco." %><br>
+        <% elsif notice["direccion"] == ["formato"] %>
+          <%= "La Dirección debe ingresarse en formato: Callejón Vicuña Mackenna 4860" %><br>
+        <% end %>
+    <% end %>
+  </p>
+
+  <h2>Edit Swiper</h2>
+
+  <table>
+      <thead>
+        <tr>
+            <th>Editar datos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <%= form_with(model: @swiper, local: true, method: :patch) do |f| %>
+              <div class="field">
+                <%= f.label :nombre %><br />
+                <%= f.text_field :nombre, autofocus: true, autocomplete: "nombre" %>
+              </div>
+
+              <div class="field">
+                <%= f.label :correo %><br />
+                <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+              </div>
+            
+              <div class="field">
+                <%= f.label :edad %><br />
+                <%= f.text_field :edad, autofocus: true, autocomplete: "edad" %>
+              </div>
+            
+              <div class="field">
+                <%= f.label :teléfono %><br />
+                <%= f.text_field :telefono, autofocus: true, autocomplete: "telefono" %>
+              </div>
+            
+              <div class="field">
+                <%= f.label :cumpleaños %><br />
+                <%= f.date_select :cumpleanos, autofocus: true, autocomplete: "cumpleanos", discard_year:true %>
+              </div>
+            
+              <div class="field">
+                <%= f.label :dirección %><br />
+                <%= f.text_field :direccion, autofocus: true, autocomplete: "direccion" %>
+              </div>
+
+              <div class="field">
+                <%= f.label :comuna_id %><br />
+                <%= f.select :comuna_id, options_from_collection_for_select(Comuna.all, :id, :nombre), 
+                    autocomplete: "comuna_id" %><br />
+              </div><br>
+              
+              <div class="field">
+                <%= f.label :gustos %><br />
+                <div style="height:150px;overflow:auto;">
+                <% @gustos = Gusto.all %>
+                <% @gustos.each do |gusto| %>
+                  <div class="box">
+                      <article class="media">
+                      <div class="media-content">
+                          <div class="content">
+                          <p>
+                              <strong><%= gusto.nombre %></strong>
+                              <br>
+                              <%= gusto.descripcion%>
+                              <%= f.check_box :gusto_ids, { multiple: true}, gusto.id, nil %>
+                          </p>
+                          </div>
+                      </div>
+                      </article>
+                  </div>
+                <% end %>
+                </div>   
+              </div><br>
+
+              <div class="field">
+                <%= f.label :descripción %><br />
+                <%= f.text_field :descripcion, autofocus: true, autocomplete: "descripcion" %>
+              </div>
+            
+              <br>
+            
+              <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+                <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+              <% end %>
+            
+              <br>
+            
+              <div class="actions">
+                <%= f.submit "Enviar datos" %>
+              </div>
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+
+  <br><br><br>
+
+  <div class="row">
+    <div class="col-md-6 text-center">
+      <h4><b>Eliminar Imágenes</b></h4>
+      <em>(Click para borrar)</em>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+      <div class="col-md-6 text-center" style="height:250px;overflow-y:auto;">
+        <% numero = 1 %>
+        <% @swiper.imagenes.each do |imagen| %>
+            <div style="margin-top:25px">
+              <b>
+                Imagen <%= numero %>
+              </b> <br>
+              <% numero += 1 %> 
+              <%= link_to image_tag(imagen, style:'width:180px; heigth:170px'), delete_imagen_swiper_path(imagen.id, @swiper.id), method: :delete, data: {confirm: "¿Estás seguro de querer eliminar esta imagen?"}, :class => "eliminar_foto" %>
+            </div>
+        <% end %>
+      </div>
+  </div><br><br>
+
+  <div class="row">
+    <div class="col-md-6 text-center">
+      <%= link_to "Volver a la lista de Swipers", lista_swipers_path %>
+    </div>
+  </div><br><br>
+<% else %>
+  <% controller.redirect_to new_admin_session_path %>
+<% end %>
